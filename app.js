@@ -1,6 +1,8 @@
 var http = require('http');
 var fs = require('fs');
+let express = require('express');
 
+let app = express();
 
 // Chargement du fichier index.html affiché au client
 var server = http.createServer(function(req, res) {
@@ -13,22 +15,28 @@ var server = http.createServer(function(req, res) {
 // Chargement de socket.io
 var io = require('socket.io').listen(server);
 
+
 io.sockets.on('connection', function (socket, pseudo) {
     // Quand un client se connecte, on lui envoie un message
     socket.emit('message', 'Vous êtes bien connecté !');
     // On signale aux autres clients qu'il y a un nouveau venu
-    socket.broadcast.emit('pseudo', pseudo + 'vient de se connecter ! ');
+    //socket.broadcast.emit('pseudo', pseudo + 'vient de se connecter ! ');
 
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session
     socket.on('pseudo', function(pseudo) {
-        socket.pseudo = pseudo;
-        socket.emit("pseudo", pseudo);
+        socket.pseudo = pseudo; //recupere le speudo
+        socket.emit("pseudo", pseudo);// on le renvoie au meme utilisateur
+        socket.broadcast.emit("pseudo",pseudo);//on renvoie le pseudo a tout les autres
     });
 
     // Dès qu'on reçoit un "message" (clic sur le bouton), on le note dans la console
     socket.on('message', function (message) {
         // On récupère le pseudo de celui qui a cliqué dans les variables de session
-        console.log(socket.pseudo + ' me parle ! Il me dit : ' + message);
+        
+        socket.emit(socket.pseudo +':'+' '+ message);
+        socket.broadcast.emit("message",message)
+
+        redirect('/');
     }); 
 });
 
