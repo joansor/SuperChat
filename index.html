@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Socket.io</title>
+  </head>
+
+  <body>
+    <h1>Le Super Chat en Temps Réel !</h1>
+
+    <br />
+
+    <form action="#" method="post" id="form">
+
+        
+      <input type="text" id="message" placeholder="Votre message..."/>
+
+      <input type="submit" value="Envoyer" id="envoyer" />
+
+    </form>
+
+    <br/><br />
+
+    <ul>
+      <li id="connection"></li>
+
+      <li id="message"></li>
+    </ul>
+
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      let socket = io.connect("http://localhost:8080");
+
+      // On demande le pseudo au visiteur...
+      let pseudo = prompt("Quel est votre pseudo ?");
+      // Et on l'envoie avec le signal "pseudo" 
+      socket.emit("pseudo", pseudo);
+
+      // On affiche une boîte de dialogue quand le serveur nous envoie un "message"
+      socket.on("message", function (message) {
+        alert("Le serveur a un message pour vous : " + message);
+      });
+
+      //recupere le pseudo du connecter et l'envoie dans le <li> connection
+  socket.on("pseudo", function(pseudo){
+
+        $("#connection").html(pseudo + ' ' +'A rejoint le Chat');
+  });
+
+
+
+      // Lorsqu'on clique sur le formulaire est soumis, on envoie le "message" au serveur
+      $("#form").submit(function(event){
+
+        socket.emit('message', $("#message"));
+      });
+     
+    </script>
+  </body>
+</html>
