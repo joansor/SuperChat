@@ -15,18 +15,19 @@
 
     <br />
 
-    <form action="#" method="post" id="form">
+    <form action="/traitement" method="post" id="form">
+
       <input type="text" id="message" placeholder="Votre message..." />
 
       <input type="submit" value="Envoyer" id="envoyer" />
+
     </form>
 
     <br /><br />
 
     <ul id="chat">
-      <!-- <li id="connection"></li> -->
-
-      <li id="message"></li>
+      
+     
     </ul>
 
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -47,21 +48,29 @@
 
       //recupere le pseudo du connecter et l'envoie dans le <li> connection
       socket.on("pseudo", function (pseudo) {
-       
 
-          let li = $("#chat").append("<li>" + pseudo + ": "+"vient de se connecter ! </li>");
+        //creer un element dans le ul avec le pseudo connecter
 
-         console.log(li);
-        //   $(".connection").html(
-        //     "<li>" + pseudo + ":" + " " + "à rejoint le Chat </li>"
-        //   );
+          let li = $("#chat").append("<li><span>" + pseudo + "</span>: "+"vient de se connecter ! </li>");
+
         
       });
 
       // Lorsqu'on clique sur le formulaire est soumis, on envoie le "message" au serveur
       $("#form").submit(function (event) {
-        socket.emit("message", $("#message"));
+
+        event.preventDefault();
+
+        //recupere la valeur du form
+        let msg = $("#message").val();
+       
+         // on envoie le msg dans un nouveau li
+         $("#chat").append("<li><span>" + pseudo + "</span>: "+  msg +"</li>");
+
+        // socket.emit(socket.pseudo + ":" + " " + socket.message);
+        
       });
+
     </script>
   </body>
 </html>
