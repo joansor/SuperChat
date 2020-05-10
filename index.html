@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Chat</title>
+    <title>SuperChat</title>
     <style>
       li {
         list-style-type: none;
@@ -15,20 +15,15 @@
 
     <br />
 
-    <form action="/traitement" method="post" id="form">
-
+    <form action="/" method="post" id="form">
       <input type="text" id="message" placeholder="Votre message..." />
 
       <input type="submit" value="Envoyer" id="envoyer" />
-
     </form>
 
     <br /><br />
 
-    <ul id="chat">
-      
-     
-    </ul>
+    <ul id="chat"></ul>
 
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
@@ -40,37 +35,53 @@
       // Et on l'envoie avec le signal "pseudo"
       socket.emit("pseudo", pseudo);
 
-      // On affiche une boîte de dialogue quand le serveur nous envoie un "message"
-
-      socket.on("message", function (message) {
-        alert("Le serveur a un message pour vous : " + message);
+      // on recupere le message le pseudo et on l'injecte dans la fonction
+      socket.on("msg", function (data) {
+        console.log(data);
+        addMsg(data.pseudo, data.msg);
+        console.log(data.pseudo, data.msg);
       });
-
       //recupere le pseudo du connecter et l'envoie dans le <li> connection
       socket.on("pseudo", function (pseudo) {
-
         //creer un element dans le ul avec le pseudo connecter
 
-          let li = $("#chat").append("<li><span>" + pseudo + "</span>: "+"vient de se connecter ! </li>");
-
-        
+        let li = $("#chat").append(
+          "<li><strong>" +
+            pseudo +
+            "</strong>: <i>" +
+            "vient de se connecter !</i></li>"
+        );
       });
+
+      // socket.on("msg", function (msg) {
+      //   let li = $("#chat").append(
+      //     "<li><strong>" + pseudo + "</strong>:<i>" + msg + "</i></li>"
+      //   );
+      // });
 
       // Lorsqu'on clique sur le formulaire est soumis, on envoie le "message" au serveur
       $("#form").submit(function (event) {
-
-        event.preventDefault();
-
         //recupere la valeur du form
         let msg = $("#message").val();
-       
-         // on envoie le msg dans un nouveau li
-         $("#chat").append("<li><span>" + pseudo + "</span>: "+  msg +"</li>");
+        socket.emit("msg", msg); // on envoie le message au serveur
 
-        // socket.emit(socket.pseudo + ":" + " " + socket.message);
-        
+        // // on envoie le msg dans un nouveau li
+        // $("#chat").append("<li><strong>" + pseudo + "</strong>: " + msg + "</li>");
+        addMsg(pseudo, msg);
+
+        $("#message").val(""); // on vide le champs
+
+        event.preventDefault();
       });
 
+      // Ajoute un message dans la page
+      function addMsg(pseudo, msg) {
+        $("#chat").append(
+          "<li><strong>" + pseudo + "</strong>: <i>" + msg + "</i></li>"
+        );
+      }
+
+      // on ecoute le serveur et on revoit son message dans le chat
     </script>
   </body>
 </html>

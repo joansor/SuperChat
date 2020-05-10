@@ -1,11 +1,11 @@
-var http = require("http");
-var fs = require("fs");
+let http = require("http");
+let fs = require("fs");
 let express = require("express");
 
 let app = express();
 
 // Chargement du fichier index.html affiché au client
-var server = http.createServer(function (req, res) {
+let server = http.createServer(function (req, res) {
   fs.readFile("./index.html", "utf-8", function (error, content) {
     res.writeHead(200, { "Content-Type": "text/html" });
     res.end(content);
@@ -13,9 +13,9 @@ var server = http.createServer(function (req, res) {
 });
 
 // Chargement de socket.io
-var io = require("socket.io").listen(server);
+let io = require("socket.io").listen(server);
 
-io.sockets.on("connection", function (socket, pseudo) {
+io.sockets.on("connection", function (socket, pseudo, msg) {
   // Quand un client se connecte, on lui envoie un message
   socket.emit("message", "Vous êtes bien connecté !");
   // On signale aux autres clients qu'il y a un nouveau venu
@@ -26,19 +26,17 @@ io.sockets.on("connection", function (socket, pseudo) {
     socket.pseudo = pseudo; //recupere le speudo
     socket.emit("pseudo", pseudo); // on le renvoie au meme utilisateur
     socket.broadcast.emit("pseudo", pseudo); //on renvoie le pseudo a tout les autres
-  });
 
-  //ajout un message par le formulaire
-  app.post("/traitement", function (req, res) {
-
-    // Dès qu'on reçoit un "message" (clic sur le bouton), on le note dans la console
-    socket.on("message", function (message) {
-        console.log(message);
-      // On récupère le pseudo de celui qui a cliqué dans les variables de session
-      socket.emit(socket.pseudo + ":" + " " + message);
-      socket.broadcast.emit("message", message);
-
-      res.redirect('/');
+    //recupere le message et le speudo de celui qui l'envoie
+    socket.on("msg", function (msg) {
+     
+      console.log(pseudo, msg);
+      socket.msg = msg; // recupere le message
+      socket.broadcast.emit("msg", {
+      pseudo: pseudo,
+      msg: msg,
+      }); // si un message on revoie le pseudo + msg a tous les autres
+      
     });
   });
 });
