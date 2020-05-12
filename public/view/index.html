@@ -2,29 +2,54 @@
 <html>
   <head>
     <meta charset="utf-8" />
+   
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="style.css" />
     <title>SuperChat</title>
-    <style>
-      li {
-        list-style-type: none;
-      }
-    </style>
   </head>
 
   <body>
-    <h1>Le Super Chat en Temps Réel !</h1>
+    <div class="container">
+      <h1>Le Super Chat en Temps Réel !</h1>
+      <img src="parseInt.png">
+      <br />
 
-    <br />
+      <form action="/" method="post" id="form">
+        <input type="text" id="message" placeholder="Votre message..." />
 
-    <form action="/" method="post" id="form">
-      <input type="text" id="message" placeholder="Votre message..." />
+        <input
+          type="submit"
+          value="Envoyer"
+          id="envoyer"
+          class="btn btn-success"
+        />
+      </form>
 
-      <input type="submit" value="Envoyer" id="envoyer" />
-    </form>
-
-    <br /><br />
-
-    <ul id="chat"></ul>
-
+      <br /><br />
+      <div class="col-md-12">
+        <ul id="chat"></ul>
+      </div>
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      crossorigin="anonymous"
+    ></script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -80,8 +105,6 @@
           "<li><strong>" + pseudo + "</strong>: <i>" + msg + "</i></li>"
         );
       }
-
-      // on ecoute le serveur et on revoit son message dans le chat
     </script>
   </body>
 </html>

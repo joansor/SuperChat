@@ -4,9 +4,16 @@ let express = require("express");
 
 let app = express();
 
+//app.use('/css',express.static(__dirname +'/css'));
+ //app.use(express.static(__dirname + '/public'));
+app.use(express.static('public'));// Indique que le dossier /public contient des fichiers statiques (middleware chargé de base)
+ //app.use('/public', express.static('public'));
+
+
+
 // Chargement du fichier index.html affiché au client
 let server = http.createServer(function (req, res) {
-  fs.readFile("./index.html", "utf-8", function (error, content) {
+  fs.readFile("./public/view/index.html", "utf-8", function (error, content) {
     res.writeHead(200, { "Content-Type": "text/html" });
     res.end(content);
   });
